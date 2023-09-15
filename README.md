@@ -1,6 +1,8 @@
 Forked from puppetsw/AutoCAD_UnitTest
 
-# Updated Sep 14, 2023 by leaveblackgithub
+# Note: Referencing TestRunnerACAD dll directly will cause exceptions, ACADExampleTest can only work with referencing TestRunnerACAD project.
+
+# Updated Sep 14, 2023
 1. Add Supports to AutoCAD 2019
 2. The extentreports-dotnet-cli deprecates ReportUnit. Use extent-framework / extentreports-dotnet-cli to replace ReportUnit. https://github.com/extent-framework/extentreports-dotnet-cli
 3. Add Trustedpaths in scr file.
