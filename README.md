@@ -1,6 +1,7 @@
 Forked from puppetsw/AutoCAD_UnitTest
 
-# Note: Referencing TestRunnerACAD dll directly will cause exceptions, ACADExampleTest can only work with referencing TestRunnerACAD project.
+# Note:
+Referencing TestRunnerACAD dll directly will cause exceptions, ACADExampleTest can only work with referencing TestRunnerACAD project.
 
 # Updated Sep 14, 2023
 1. Add Supports to AutoCAD 2019
