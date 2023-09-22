@@ -66,6 +66,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="TestDrawing.dwg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TestLoader.scr">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
