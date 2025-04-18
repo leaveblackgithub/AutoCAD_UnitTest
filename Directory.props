@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Directory.props - 解决方案全局设置文件
+功能：
+1. 统一设置所有项目的输出路径到解决方案根目录的bin文件夹
+2. 自动将命名空间设置为与项目名称相同
+3. 设置Deterministic=false以支持通配符版本号
+4. 统一常用构建参数和引用
+-->
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Solution-wide properties -->
+  <PropertyGroup>
+    <!-- Path standardization -->
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildThisFileDirectory)</SolutionDir>
+    <SolutionBinDir>$(SolutionDir)bin\</SolutionBinDir>
+    <!-- 所有项目的输出放在同一个文件夹内，不按项目名称区分子文件夹 -->
+    <OutputPath>$(SolutionBinDir)$(Configuration)\</OutputPath>
+    <BaseIntermediateOutputPath>$(SolutionBinDir)obj\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
+
+    <!-- Common properties -->
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <!-- 自动将命名空间设置为与项目名称相同 -->
+    <RootNamespace>$(MSBuildProjectName)</RootNamespace>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <!-- 设置为false允许使用通配符版本号(如1.0.*) -->
+    <Deterministic>false</Deterministic>
+    <LangVersion>latest</LangVersion>
+    
+    <!-- Common debug/release properties -->
+    <DebugType Condition="'$(Configuration)' == 'Debug'">full</DebugType>
+    <DebugType Condition="'$(Configuration)' == 'Release'">pdbonly</DebugType>
+    <DebugSymbols Condition="'$(Configuration)' == 'Debug'">true</DebugSymbols>
+    <Optimize Condition="'$(Configuration)' == 'Debug'">false</Optimize>
+    <Optimize Condition="'$(Configuration)' == 'Release'">true</Optimize>
+    <DefineConstants Condition="'$(Configuration)' == 'Debug'">DEBUG;TRACE</DefineConstants>
+    <DefineConstants Condition="'$(Configuration)' == 'Release'">TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  
+  <!-- Common package references -->
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.13.2" />
+  </ItemGroup>
+</Project> 
