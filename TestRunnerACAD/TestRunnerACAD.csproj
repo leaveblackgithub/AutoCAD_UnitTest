@@ -12,7 +12,6 @@ TestRunnerACAD.csproj - AutoCAD测试运行器库项目
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Import the shared properties from Directory.props -->
   <Import Project="$(MSBuildThisFileDirectory)\..\Directory.props" />
-  
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -20,7 +19,6 @@ TestRunnerACAD.csproj - AutoCAD测试运行器库项目
     <OutputType>Library</OutputType>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-  
   <ItemGroup>
     <Reference Include="AcCoreMgd, Version=23.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>$(SolutionDir)packages\AutoCAD.NET.Core.23.0.0\lib\net47\AcCoreMgd.dll</HintPath>
@@ -45,8 +43,8 @@ TestRunnerACAD.csproj - AutoCAD测试运行器库项目
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Configuration" />
   </ItemGroup>
-  
   <ItemGroup>
     <Compile Include="$(SolutionDir)CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
@@ -55,20 +53,64 @@ TestRunnerACAD.csproj - AutoCAD测试运行器库项目
     <Compile Include="PathManager.cs" />
     <Compile Include="ReportGenerator.cs" />
     <Compile Include="TestBase.cs" />
-    <Compile Include="TestRunnerBase.cs" />
+    <Compile Include="TestUtils.cs" />
   </ItemGroup>
-  
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  
   <ItemGroup>
     <Content Include="ExtentReports\ExtentReports.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="paths.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  
+  <!-- 在构建开始前更新paths.config中的输出路径常量 -->
+  <Target Name="UpdateConfigPathConstant" BeforeTargets="CoreCompile">
+    <PropertyGroup>
+      <!-- 计算实际输出路径的完整路径 -->
+      <ActualOutputPath>$([System.IO.Path]::GetFullPath('$(OutputPath)'))</ActualOutputPath>
+      <!-- 配置文件路径 -->
+      <ConfigFile>$(ProjectDir)paths.config</ConfigFile>
+    </PropertyGroup>
+    
+    <!-- 确保配置文件存在 -->
+    <PropertyGroup>
+      <ConfigFileContent Condition="!Exists('$(ConfigFile)')">
+<![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <appSettings>
+    <add key="OutputPath" value="$(ActualOutputPath)" />
+  </appSettings>
+</configuration>]]>
+      </ConfigFileContent>
+    </PropertyGroup>
+
+    <!-- 如果配置文件不存在，则创建它 -->
+    <WriteLinesToFile File="$(ConfigFile)" 
+                     Lines="$(ConfigFileContent)" 
+                     Overwrite="true" 
+                     Condition="!Exists('$(ConfigFile)')" />
+
+    <!-- 读取配置文件 -->
+    <XmlPeek XmlInputPath="$(ConfigFile)" 
+             Query="/configuration/appSettings/add[@key='OutputPath']/@value" 
+             Condition="Exists('$(ConfigFile)')">
+      <Output TaskParameter="Result" PropertyName="CurrentOutputPathValue" />
+    </XmlPeek>
+
+    <!-- 只有当路径需要更新时才更新配置文件 -->
+    <XmlPoke XmlInputPath="$(ConfigFile)" 
+             Query="/configuration/appSettings/add[@key='OutputPath']/@value" 
+             Value="$(ActualOutputPath)" 
+             Condition="$(CurrentOutputPathValue) != '$(ActualOutputPath)'" />
+
+    <Message Text="Updated paths.config with output path: $(ActualOutputPath)" Importance="high" />
+  </Target>
   
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

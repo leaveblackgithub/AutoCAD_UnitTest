@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using NUnit.Framework;
@@ -8,7 +9,7 @@ namespace ACADExampleTest
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class ExampleTestsInOtherProjects : TestBase
+    public class ExampleTestsInOtherProjects 
     {
         [Test]
         public void OtherTest_Pass()
@@ -51,7 +52,8 @@ namespace ACADExampleTest
             }
 
             // Run the tests
-            ExecuteTestActions(null, Action1, Action2);
+            // TestUtils.ExcecuteInCl(null, Action1, Action2);
+            TestUtils.ExecuteInApp(new Action<Database, Transaction>[] { Action1, Action2 });
         }
     }
 }

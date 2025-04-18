@@ -17,10 +17,9 @@ namespace TestRunnerACAD
         /// <summary>
         /// Initializes a new instance of the ReportGenerator class
         /// </summary>
-        /// <param name="testAssemblyPath">Path to the test assembly</param>
-        public ReportGenerator(string testAssemblyPath)
+        public ReportGenerator()
         {
-            _pathManager = new PathManager(testAssemblyPath);
+            _pathManager = new PathManager();
         }
 
         /// <summary>
@@ -46,9 +45,6 @@ namespace TestRunnerACAD
         {
             if (!File.Exists(NunitXmlPath))
                 return;
-
-            
-            
 
             InitReportDir();
 
@@ -82,7 +78,7 @@ namespace TestRunnerACAD
 
         public void CleanNunitXml()
         {
-            // É¾³ýÏÖÓÐµÄ²âÊÔ±¨¸æÎÄ¼þ
+            // åˆ é™¤çŽ°æœ‰çš„æµ‹è¯•æŠ¥å‘Šæ–‡ä»¶
             if (File.Exists(NunitXmlPath))
                 File.Delete(NunitXmlPath);
         }
