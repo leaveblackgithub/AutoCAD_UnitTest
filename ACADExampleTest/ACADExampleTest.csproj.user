@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 Automatically generated debug settings file - ACADExampleTest.csproj.user
-Generation time: 2025/4/18 21:07:10
+Generation time: 2025/4/18 22:47:07
 
 Features:
 1. Configure AutoCAD debug settings using full absolute paths
@@ -15,17 +15,21 @@ Notes:
 - Do not modify manually, modifications will be overwritten in the next build
 -->
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition="'Debug|AnyCPU' == 'Debug|AnyCPU'">
+  <PropertyGroup Condition="'DebugInApp|AnyCPU' == 'DebugInApp|AnyCPU'">
     <StartAction>Program</StartAction>
-    <StartProgram>C:/Program Files/Autodesk/AutoCAD 2019/accoreconsole.exe</StartProgram>
-    <StartArguments>/s "D:/leaveblackgithub/AutoCAD_UnitTest/bin/Debug/TestLoader.scr"</StartArguments>
-    <StartWorkingDirectory>D:/leaveblackgithub/AutoCAD_UnitTest/bin/Debug/</StartWorkingDirectory>
+    <StartProgram>C:/Program Files/Autodesk/AutoCAD 2019/acad.exe</StartProgram>
   </PropertyGroup>
-  <PropertyGroup Condition="'Debug|AnyCPU' == 'Release|AnyCPU'">
+  <PropertyGroup Condition="'DebugInApp|AnyCPU' == 'DebugInAcCoreConsle|AnyCPU'">
     <StartAction>Program</StartAction>
     <StartProgram>C:/Program Files/Autodesk/AutoCAD 2019/accoreconsole.exe</StartProgram>
-    <StartArguments>/s "D:/leaveblackgithub/AutoCAD_UnitTest/bin/Debug/TestLoader.scr"</StartArguments>
-    <StartWorkingDirectory>D:/leaveblackgithub/AutoCAD_UnitTest/bin/Debug/</StartWorkingDirectory>
+    <StartArguments>/s "D:/leaveblackgithub/AutoCAD_UnitTest/bin/DebugInApp/TestLoader.scr"</StartArguments>
+    <StartWorkingDirectory>D:/leaveblackgithub/AutoCAD_UnitTest/bin/DebugInApp/</StartWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'DebugInApp|AnyCPU' == 'Release|AnyCPU'">
+    <StartAction>Program</StartAction>
+    <StartProgram>C:/Program Files/Autodesk/AutoCAD 2019/accoreconsole.exe</StartProgram>
+    <StartArguments>/s "D:/leaveblackgithub/AutoCAD_UnitTest/bin/DebugInApp/TestLoader.scr"</StartArguments>
+    <StartWorkingDirectory>D:/leaveblackgithub/AutoCAD_UnitTest/bin/DebugInApp/</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectView>ShowAllFiles</ProjectView>

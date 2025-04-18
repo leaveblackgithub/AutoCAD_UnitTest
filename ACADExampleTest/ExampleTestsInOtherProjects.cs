@@ -51,9 +51,8 @@ namespace ACADExampleTest
                 if (!db.TryGetObjectId(new Handle(lineId), out objectId)) Assert.Fail("Line didn't created");
             }
 
-            // Run the tests
-            // TestUtils.ExcecuteInCl(null, Action1, Action2);
-            TestUtils.ExecuteInApp(new Action<Database, Transaction>[] { Action1, Action2 });
+            // 使用统一的ExecuteInAny方法，自动选择合适的执行方式
+            TestUtils.ExecuteInAny(null,Action1, Action2);
         }
     }
 }

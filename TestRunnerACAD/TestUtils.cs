@@ -12,12 +12,12 @@ namespace TestRunnerACAD
 {
     public static class TestUtils
     {
-        public static void Run(Assembly testAssembly)
+        public static void Run(Assembly testAssembly, string excludeNameSpace = "")
         {
             // 创建ReportGenerator实例
             var reportGenerator = new ReportGenerator();
 
-            string xmlReportPath = reportGenerator.NunitXmlPath;
+            var xmlReportPath = reportGenerator.NunitXmlPath;
 
             reportGenerator.CleanNunitXml();
 
@@ -25,10 +25,13 @@ namespace TestRunnerACAD
             var nunitArgs = new List<string>
             {
                 "--trace=verbose", "--result=" + xmlReportPath
-            }.ToArray();
+            };
 
             // 运行测试
-            new AutoRun(testAssembly).Execute(nunitArgs);
+            if (!string.IsNullOrEmpty(excludeNameSpace)) nunitArgs.Add($"--where=namespace!~'{excludeNameSpace}'");
+
+            new AutoRun(testAssembly).Execute(nunitArgs.ToArray());
+
 
             // 生成HTML测试报告
             //The extentreports-dotnet-cli deprecates ReportUnit. Can only define output folder and export to default index.html
@@ -57,7 +60,6 @@ namespace TestRunnerACAD
                 if (!File.Exists(drawingFile)) Assert.Fail($"Drawing file {drawingFile} does not exist.");
             }
 
-            Exception exception = null;
             var document = Application.DocumentManager.MdiActiveDocument;
 
             // Lock the document and execute the test actions.
@@ -78,6 +80,22 @@ namespace TestRunnerACAD
             }
         }
 
+        /// <summary>
+        ///     执行测试动作 - 根据编译环境自动选择合适的执行方法
+        /// </summary>
+        /// <param name="testActions">要执行的测试动作数组</param>
+        /// <param name="drawingFile">可选的图形文件路径，仅用于AcCoreConsole环境</param>
+        public static void ExecuteInAny(string drawingFile = "", params Action<Database, Transaction>[] testActions)
+        {
+#if IN_ACCORE
+            // 在AcCoreConsole环境下运行
+            ExcecuteInCl(drawingFile, testActions);
+#else
+            ExecuteInApp(testActions);
+#endif
+        }
+
+
         public static void ExecuteInApp(Action<Database, Transaction>[] testActions)
         {
             var document = Application.DocumentManager.MdiActiveDocument;
@@ -88,7 +106,6 @@ namespace TestRunnerACAD
             {
                 ExecuteActions(testActions, db);
             }
-
         }
 
         private static void ExecuteActions(Action<Database, Transaction>[] testActions, Database db)
@@ -103,7 +120,6 @@ namespace TestRunnerACAD
                     }
                     catch (Exception e)
                     {
-
                         tr.Commit();
                         MessageBox.Show(e.ToString());
                         break;

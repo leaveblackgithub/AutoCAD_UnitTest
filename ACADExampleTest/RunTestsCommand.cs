@@ -14,7 +14,11 @@ namespace ACADExampleTest
         public void RunTests()
         {
             var assembly = Assembly.GetExecutingAssembly();
+#if IN_ACCORE
+            TestUtils.Run(assembly, "ACADExampleTest.TestInApp");
+#else
             TestUtils.Run(assembly);
+#endif
         }
     }
 }
