@@ -12,17 +12,24 @@ namespace TestRunnerACAD
             if (directoryPlugin == null)
                 return;
 
-            var directoryReportUnit = Path.Combine(directoryPlugin, TestRunnerConsts.ReportToolFolderName);
-            Directory.CreateDirectory(directoryReportUnit);
-            var fileInputXml = Path.Combine(directoryReportUnit, TestRunnerConsts.ReportNunitXml);
-            if (File.Exists(fileInputXml))
-                File.Delete(fileInputXml);
+            string reportDir = PathManager.GetReportDirectory();
+            string xmlReportPath = PathManager.GetNUnitXmlReportPath();
+            
+            // 删除现有的测试报告文件
+            if (File.Exists(xmlReportPath))
+                File.Delete(xmlReportPath);
+                
+            // 设置NUnit参数，包括输出XML结果
             var nunitArgs = new List<string>
             {
-                "--trace=verbose", "--result=" + fileInputXml
+                "--trace=verbose", "--result=" + xmlReportPath
             }.ToArray();
 
+            // 运行测试
             new AutoRun(assembly).Execute(nunitArgs);
+            
+            // 生成HTML测试报告
+            PathManager.GenerateReport();
         }
     }
 }
