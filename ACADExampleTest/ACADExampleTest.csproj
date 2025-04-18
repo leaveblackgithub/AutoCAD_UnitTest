@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
-ACADExampleTest.csproj - AutoCAD单元测试项目文件
+ACADExampleTest.csproj - AutoCAD Unit Test Project File
 
-功能：
-1. 封装测试用例
-2. 引用TestRunnerACAD库
-3. 处理输出的TestLoader.scr脚本
+Features:
+1. Encapsulates test cases
+2. References TestRunnerACAD library
+3. Processes output TestLoader.scr script
 
-此项目是解决方案的主要测试项目，负责执行所有测试
+This project is the main test project for the solution, responsible for executing all tests
 -->
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Import the shared properties from Directory.props -->
@@ -77,32 +77,32 @@ ACADExampleTest.csproj - AutoCAD单元测试项目文件
   
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   
-  <!-- 处理SCR文件，将相对路径替换为绝对路径 -->
+  <!-- Process SCR file, replace relative paths with absolute paths -->
   <Target Name="ProcessScrFile" AfterTargets="Build">
     <PropertyGroup>
       <ScrSourceFile>$(ProjectDir)TestLoader.scr</ScrSourceFile>
       <ScrTargetFile>$(OutputPath)TestLoader.scr</ScrTargetFile>
-      <!-- 确保路径使用正斜杠格式 -->
+      <!-- Ensure paths use forward slash format -->
       <OutputPathForward>$(OutputPath.Replace('\', '/'))</OutputPathForward>
     </PropertyGroup>
     
-    <!-- SCR文件说明（不会写入文件）：
-         1. 设置可信路径为DLL所在目录
-         2. 加载测试DLL
-         3. 执行测试
+    <!-- SCR file description (not written to file):
+         1. Set trusted path to DLL directory
+         2. Load test DLL
+         3. Execute tests
          
-         注意：
-         - 此文件会被复制到输出目录
-         - AutoCAD不支持注释，所以SCR文件中不包含注释
-         - 只包含实际执行的命令
+         Note:
+         - This file will be copied to output directory
+         - AutoCAD does not support comments, so SCR file contains no comments
+         - Only includes actual commands to execute
     -->
     
-    <!-- 读取SCR文件内容 -->
+    <!-- Read SCR file content -->
     <ReadLinesFromFile File="$(ScrSourceFile)">
       <Output TaskParameter="Lines" ItemName="ScrFileLines" />
     </ReadLinesFromFile>
     
-    <!-- 创建包含实际路径的临时文件，不包含注释 -->
+    <!-- Create temporary file with actual paths, without comments -->
     <WriteLinesToFile File="$(ScrTargetFile).temp" 
                       Lines="setvar
 trustedpaths
@@ -111,51 +111,51 @@ netload $(OutputPathForward)ACADExampleTest.dll
 RunTests" 
                       Overwrite="true" />
                       
-    <!-- 使用临时文件替换目标文件 -->              
+    <!-- Replace target file with temporary file -->              
     <Copy SourceFiles="$(ScrTargetFile).temp" DestinationFiles="$(ScrTargetFile)" />
     <Delete Files="$(ScrTargetFile).temp" />
     
-    <Message Text="已处理SCR文件，将相对路径替换为绝对路径: $(ScrTargetFile)" Importance="high" />
-    <Message Text="SCR文件功能：设置可信路径，加载DLL，执行测试" Importance="high" />
+    <Message Text="Processed SCR file, replaced relative paths with absolute paths: $(ScrTargetFile)" Importance="high" />
+    <Message Text="SCR file function: Set trusted paths, load DLL, execute tests" Importance="high" />
   </Target>
 
-  <!-- 自动生成调试设置，使用绝对路径 -->
+  <!-- Automatically generate debug settings, using absolute paths -->
   <Target Name="GenerateDebugSettings" AfterTargets="ProcessScrFile">
     <PropertyGroup>
-      <!-- AutoCAD路径 -->
+      <!-- AutoCAD path -->
       <AcadExePath>C:/Program Files/Autodesk/AutoCAD 2019/accoreconsole.exe</AcadExePath>
       
-      <!-- 获取输出路径的完整绝对路径 -->
+      <!-- Get full absolute path for output path -->
       <OutputPathAbs>$([System.IO.Path]::GetFullPath('$(OutputPath)').Replace('\', '/'))</OutputPathAbs>
       
-      <!-- 获取SCR文件的完整绝对路径 -->
+      <!-- Get full absolute path for SCR file -->
       <ScrFileAbs>$([System.IO.Path]::GetFullPath('$(OutputPath)TestLoader.scr').Replace('\', '/'))</ScrFileAbs>
       
-      <!-- 输出的用户设置文件 -->
+      <!-- Output user settings file -->
       <UserFile>$(ProjectDir)$(MSBuildProjectName).csproj.user</UserFile>
     </PropertyGroup>
     
-    <Message Text="计算的绝对路径:" Importance="high" />
-    <Message Text="输出目录: $(OutputPathAbs)" Importance="high" />
-    <Message Text="SCR文件: $(ScrFileAbs)" Importance="high" />
+    <Message Text="Calculated absolute paths:" Importance="high" />
+    <Message Text="Output directory: $(OutputPathAbs)" Importance="high" />
+    <Message Text="SCR file: $(ScrFileAbs)" Importance="high" />
     
-    <!-- 创建自定义用户设置文件模板 -->
+    <!-- Create custom user settings file template -->
     <WriteLinesToFile File="$(UserFile).temp" 
                       Lines="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
 &lt;!--
-自动生成的调试设置文件 - $(MSBuildProjectName).csproj.user
-生成时间: $([System.DateTime]::Now)
+Automatically generated debug settings file - $(MSBuildProjectName).csproj.user
+Generation time: $([System.DateTime]::Now)
 
-功能:
-1. 配置AutoCAD调试设置，使用完整绝对路径
-2. 自动设置启动参数和工作目录
+Features:
+1. Configure AutoCAD debug settings using full absolute paths
+2. Automatically set startup parameters and working directory
 
-注意:
-- 此文件由构建过程自动生成
-- 所有路径都使用AutoCAD兼容的正斜杠(/)格式
-- 命令行参数使用正斜杠(/s)作为选项标志
-- 工作目录设置为解决方案输出路径
-- 请勿手动修改，修改会在下次构建时被覆盖
+Notes:
+- This file is automatically generated by the build process
+- All paths use AutoCAD-compatible forward slash (/) format
+- Command line arguments use forward slash (/s) as option flags
+- Working directory is set to solution output path
+- Do not modify manually, modifications will be overwritten in the next build
 --&gt;
 &lt;Project ToolsVersion=&quot;Current&quot; xmlns=&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;&gt;
   &lt;PropertyGroup Condition=&quot;'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'&quot;&gt;
@@ -176,16 +176,16 @@ RunTests"
 &lt;/Project&gt;" 
                       Overwrite="true" />
     
-    <!-- 替换用户设置文件 -->
+    <!-- Replace user settings file -->
     <Copy SourceFiles="$(UserFile).temp" DestinationFiles="$(UserFile)" />
     <Delete Files="$(UserFile).temp" />
     
-    <Message Text="已生成调试设置，使用绝对路径: $(UserFile)" Importance="high" />
+    <Message Text="Generated debug settings using absolute paths: $(UserFile)" Importance="high" />
   </Target>
 
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。使用"NuGet 程序包还原"可下载这些程序包。有关更多信息，请参见 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
+      <ErrorText>This computer is missing NuGet packages referenced by this project. Use "NuGet Package Restore" to download these packages. For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)packages\NUnit.3.13.2\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)packages\NUnit.3.13.2\build\NUnit.props'))" />
   </Target>
