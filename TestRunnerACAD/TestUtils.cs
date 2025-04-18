@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using NUnit.Framework;
 using NUnitLite;
@@ -85,7 +86,7 @@ namespace TestRunnerACAD
         /// </summary>
         /// <param name="testActions">要执行的测试动作数组</param>
         /// <param name="drawingFile">可选的图形文件路径，仅用于AcCoreConsole环境</param>
-        public static void ExecuteInAny(string drawingFile = "", params Action<Database, Transaction>[] testActions)
+        public static void ExecuteDbActions(string drawingFile = "", params Action<Database, Transaction>[] testActions)
         {
 #if IN_ACCORE
             // 在AcCoreConsole环境下运行
@@ -94,7 +95,6 @@ namespace TestRunnerACAD
             ExecuteInApp(testActions);
 #endif
         }
-
 
         public static void ExecuteInApp(Action<Database, Transaction>[] testActions)
         {

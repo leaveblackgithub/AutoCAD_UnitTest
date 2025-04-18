@@ -12,14 +12,14 @@ namespace ACADExampleTest.TestInApp
     {
 
         [Test]
-        public void Test_Editor()
+        public void Test_InAppOnly()
         {
             void Action1(Database db, Transaction tr)
             {
                 MessageBox.Show("app only");
             }
             // 使用统一的ExecuteInAny方法，自动选择合适的执行方式
-            TestUtils.ExecuteInAny(null,Action1);
+            TestUtils.ExecuteDbActions(null,Action1);
         }
     }
 }

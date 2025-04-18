@@ -52,7 +52,7 @@ namespace ACADExampleTest
             }
 
             // 使用统一的ExecuteInAny方法，自动选择合适的执行方式
-            TestUtils.ExecuteInAny(null,Action1, Action2);
+            TestUtils.ExecuteDbActions(null,Action1, Action2);
         }
     }
 }
