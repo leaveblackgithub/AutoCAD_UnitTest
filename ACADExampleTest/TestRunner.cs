@@ -14,8 +14,7 @@ namespace ACADExampleTest
         public void RunTests()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var directoryPlugin = Path.GetDirectoryName(assembly.Location);
-            RunTestsBase(assembly, directoryPlugin);
+            RunTestsBase(assembly);
         }
     }
 }

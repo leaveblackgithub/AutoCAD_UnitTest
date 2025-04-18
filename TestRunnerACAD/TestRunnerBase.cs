@@ -7,18 +7,17 @@ namespace TestRunnerACAD
 {
     public class TestRunnerBase
     {
-        public void RunTestsBase(Assembly assembly, string directoryPlugin)
+        public void RunTestsBase(Assembly testAssembly)
         {
-            if (directoryPlugin == null)
-                return;
-
-            string reportDir = PathManager.GetReportDirectory();
-            string xmlReportPath = PathManager.GetNUnitXmlReportPath();
             
-            // 删除现有的测试报告文件
-            if (File.Exists(xmlReportPath))
-                File.Delete(xmlReportPath);
-                
+            // 创建PathManager实例，传入程序集路径
+            var assemblyLocation = testAssembly.Location;
+            var reportGenerator = new ReportGenerator(assemblyLocation);
+
+            string xmlReportPath = reportGenerator.NunitXmlPath;
+
+            reportGenerator.CleanNunitXml();
+
             // 设置NUnit参数，包括输出XML结果
             var nunitArgs = new List<string>
             {
@@ -26,10 +25,12 @@ namespace TestRunnerACAD
             }.ToArray();
 
             // 运行测试
-            new AutoRun(assembly).Execute(nunitArgs);
+            new AutoRun(testAssembly).Execute(nunitArgs);
             
             // 生成HTML测试报告
-            PathManager.GenerateReport();
+            //The extentreports-dotnet-cli deprecates ReportUnit. Can only define output folder and export to default index.html
+            reportGenerator.CreateHtmlReport();
+            reportGenerator.OpenHtmlReport();
         }
     }
 }
